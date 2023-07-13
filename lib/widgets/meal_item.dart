@@ -4,9 +4,14 @@ import 'package:foodies/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({super.key, required this.meal});
+  const MealItem({
+    super.key,
+    required this.meal,
+    required this.onselectMeal,
+  });
 
   final Meal meal;
+  final void Function(Meal meal) onselectMeal;
 
   get complexityText {
     return meal.complexity.name[0].toUpperCase() +
@@ -18,6 +23,15 @@ class MealItem extends StatelessWidget {
         meal.affordability.name.substring(1);
   }
 
+  // void selectMeal(BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (ctx) => MealDetailsScreen(meal: meal),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(context) {
     return Card(
@@ -28,7 +42,9 @@ class MealItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       elevation: 2,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          onselectMeal(meal);
+        },
         child: Stack(
           children: [
             FadeInImage(
