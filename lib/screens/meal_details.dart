@@ -9,7 +9,6 @@ class MealDetailsScreen extends StatelessWidget {
   });
 
   final Meal meal;
-
   @override
   Widget build(context) {
     return Scaffold(
