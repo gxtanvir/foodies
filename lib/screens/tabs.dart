@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodies/screens/categories.dart';
 import 'package:foodies/screens/meals.dart';
+import 'package:foodies/models/meal.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -12,24 +13,55 @@ class TabScreen extends StatefulWidget {
 }
 
 class TabScreenState extends State<TabScreen> {
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
+
+  final List<Meal> _favoriteMeals = [];
+
+  // Info Message
+  void _showInfoMessage(String text) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+      ),
+    );
+  }
+
+  // Favorite Meal Add Remove
+  void _toogleMealsFavoriteStatus(Meal meal) {
+    final isExisting = _favoriteMeals.contains(meal);
+
+    if (isExisting) {
+      setState(() {
+        _favoriteMeals.remove(meal);
+      });
+      _showInfoMessage('Item Removed from Favorite!');
+    } else {
+      setState(() {
+        _favoriteMeals.add(meal);
+      });
+      _showInfoMessage('Added to Favorite!');
+    }
+  }
+
   void _selectPage(int index) {
     setState(() {
-      selectedIndex = index;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = const CategoriesScreen();
+    Widget activePage = CategoriesScreen(
+      onToogleFavorite: _toogleMealsFavoriteStatus,
+    );
     var activePageTitle = 'Category';
 
-    if (selectedIndex == 1) {
-      activePage ==
-          const MealsScreen(
-            title: 'Favorite',
-            meals: [],
-          );
+    if (_selectedIndex == 1) {
+      activePage = MealsScreen(
+        meals: _favoriteMeals,
+        onToogleFavorite: _toogleMealsFavoriteStatus,
+      );
       activePageTitle = 'Favortie';
     }
     return Scaffold(
@@ -38,15 +70,21 @@ class TabScreenState extends State<TabScreen> {
       ),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectPage,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.set_meal), label: 'Catogories'),
+            icon: Icon(Icons.set_meal),
+            label: 'Catogories',
+            backgroundColor: Colors.purple,
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorite'),
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+            backgroundColor: Colors.pink,
+          ),
         ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.amber,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.lightGreen,
+        onTap: _selectPage,
       ),
     );
   }
