@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:foodies/screens/categories.dart';
 import 'package:foodies/screens/meals.dart';
 import 'package:foodies/models/meal.dart';
+import 'package:foodies/widgets/main_drawer.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -50,6 +51,14 @@ class TabScreenState extends State<TabScreen> {
     });
   }
 
+  // Switching Screen
+  void _selectScreen(String identifire) {
+    if (identifire == 'filters') {
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget activePage = CategoriesScreen(
@@ -68,6 +77,7 @@ class TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
+      drawer: MainDrawer(onSelectScreen: _selectScreen),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         items: const [
