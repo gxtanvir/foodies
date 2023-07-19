@@ -53,13 +53,14 @@ class TabScreenState extends State<TabScreen> {
   }
 
   // Switching Screen
-  void _selectScreen(String identifire) {
+  void _selectScreen(String identifire) async {
     Navigator.of(context).pop();
     if (identifire == 'filters') {
-      Navigator.push(
+      final result = await Navigator.push<Map<Filter, bool>>(
         context,
         MaterialPageRoute(builder: (ctx) => const FilterScreen()),
       );
+      print(result);
     }
   }
 
