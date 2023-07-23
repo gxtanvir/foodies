@@ -6,18 +6,26 @@ import 'package:foodies/widgets/category_grid_item.dart';
 import 'package:foodies/models/category.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key, required this.onToogleFavorite,});
+  const CategoriesScreen({
+    super.key,
+    required this.onToogleFavorite,
+    required this.availAbleMeals,
+  });
   final void Function(Meal meal) onToogleFavorite;
+  final List<Meal> availAbleMeals;
 
   void _selectCategory(BuildContext context, Category category) {
-    final filteredCategory = dummyMeals
+    final filteredCategory = availAbleMeals
         .where((meal) => meal.categories.contains(category.id))
         .toList();
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (ctx) =>
-              MealsScreen(title: category.title, meals: filteredCategory, onToogleFavorite: onToogleFavorite,),
+          builder: (ctx) => MealsScreen(
+            title: category.title,
+            meals: filteredCategory,
+            onToogleFavorite: onToogleFavorite,
+          ),
         ));
   }
 

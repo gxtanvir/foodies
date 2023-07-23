@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:foodies/data/category_data.dart';
 import 'package:foodies/screens/categories.dart';
 import 'package:foodies/screens/filters.dart';
 import 'package:foodies/screens/meals.dart';
 import 'package:foodies/models/meal.dart';
 import 'package:foodies/widgets/main_drawer.dart';
 
+const kInitialFilters = {
+  Filter.glutenfree: false,
+  Filter.lactosefree: false,
+  Filter.vegetarian: false,
+  Filter.vegan: false,
+};
+
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
 
   @override
   State<TabScreen> createState() {
-    return TabScreenState();
+    return _TabScreenState();
   }
 }
 
-class TabScreenState extends State<TabScreen> {
+class _TabScreenState extends State<TabScreen> {
   int _selectedIndex = 0;
+  Map<Filter, bool> _selectedFilters = kInitialFilters;
 
   final List<Meal> _favoriteMeals = [];
 
@@ -58,16 +67,37 @@ class TabScreenState extends State<TabScreen> {
     if (identifire == 'filters') {
       final result = await Navigator.push<Map<Filter, bool>>(
         context,
-        MaterialPageRoute(builder: (ctx) => const FilterScreen()),
+        MaterialPageRoute(
+            builder: (ctx) => FilterScreen(
+                  currenFilter: _selectedFilters,
+                )),
       );
-      print(result);
+      setState(() {
+        _selectedFilters = result ?? kInitialFilters;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final availAbleMeals = dummyMeals.where((meal) {
+      if (_selectedFilters[Filter.glutenfree]! && !meal.isGlutenFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.lactosefree]! && !meal.isLactoseFree) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+        return false;
+      }
+      if (_selectedFilters[Filter.lactosefree]! && !meal.isVegan) {
+        return false;
+      }
+      return true;
+    }).toList();
     Widget activePage = CategoriesScreen(
       onToogleFavorite: _toogleMealsFavoriteStatus,
+      availAbleMeals: availAbleMeals,
     );
     var activePageTitle = 'Category';
 
