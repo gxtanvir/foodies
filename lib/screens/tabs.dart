@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodies/screens/categories.dart';
 import 'package:foodies/screens/filters.dart';
 import 'package:foodies/screens/meals.dart';
-import 'package:foodies/models/meal.dart';
 import 'package:foodies/widgets/main_drawer.dart';
 import 'package:foodies/providers/meals_provider.dart';
+import 'package:foodies/providers/favorite_provider.dart';
 
 const kInitialFilters = {
   Filter.glutenfree: false,
@@ -26,35 +26,6 @@ class TabScreen extends ConsumerStatefulWidget {
 class _TabScreenState extends ConsumerState<TabScreen> {
   int _selectedIndex = 0;
   Map<Filter, bool> _selectedFilters = kInitialFilters;
-
-  final List<Meal> _favoriteMeals = [];
-
-  // Info Message
-  void _showInfoMessage(String text) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(text),
-      ),
-    );
-  }
-
-  // Favorite Meal Add Remove
-  void _toogleMealsFavoriteStatus(Meal meal) {
-    final isExisting = _favoriteMeals.contains(meal);
-
-    if (isExisting) {
-      setState(() {
-        _favoriteMeals.remove(meal);
-      });
-      _showInfoMessage('Item Removed from Favorite!');
-    } else {
-      setState(() {
-        _favoriteMeals.add(meal);
-      });
-      _showInfoMessage('Added to Favorite!');
-    }
-  }
 
   void _selectPage(int index) {
     setState(() {
@@ -98,15 +69,14 @@ class _TabScreenState extends ConsumerState<TabScreen> {
       return true;
     }).toList();
     Widget activePage = CategoriesScreen(
-      onToogleFavorite: _toogleMealsFavoriteStatus,
       availAbleMeals: availAbleMeals,
     );
     var activePageTitle = 'Category';
 
     if (_selectedIndex == 1) {
+      final favoriteMeals = ref.watch((favoriteMealsProvider));
       activePage = MealsScreen(
-        meals: _favoriteMeals,
-        onToogleFavorite: _toogleMealsFavoriteStatus,
+        meals: favoriteMeals,
       );
       activePageTitle = 'Favortie';
     }

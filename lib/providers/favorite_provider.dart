@@ -4,18 +4,20 @@ import 'package:foodies/models/meal.dart';
 class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   FavoriteMealsNotifier() : super([]);
 
-  void togleFavoriteMealStatus(Meal meal) {
+  bool tootgleFavoriteMealStatus(Meal meal) {
     final mealIsFavorite = state.contains(meal);
 
     if (mealIsFavorite) {
       state = state.where((m) => m.id != meal.id).toList();
+      return false;
     } else {
       state = [...state, meal];
+      return true;
     }
   }
 }
 
-final favoriteMealProvider =
+final favoriteMealsProvider =
     StateNotifierProvider<FavoriteMealsNotifier, List<Meal>>((ref) {
   return FavoriteMealsNotifier();
 });

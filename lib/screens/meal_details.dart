@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:foodies/models/meal.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:foodies/providers/favorite_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MealDetailsScreen extends StatelessWidget {
+class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({
     super.key,
     required this.meal,
-    required this.onToogleFavorite,
   });
 
   final Meal meal;
-  final void Function(Meal meal) onToogleFavorite;
   @override
-  Widget build(context) {
+  Widget build(context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
         actions: [
           IconButton(
             onPressed: () {
-              onToogleFavorite(meal);
+              final wasAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .tootgleFavoriteMealStatus(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(wasAdded
+                      ? 'Meal added to favorite!'
+                      : 'Meal removed from favorite!'),
+                ),
+              );
             },
             icon: const Icon(Icons.favorite),
           ),

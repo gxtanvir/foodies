@@ -8,10 +8,8 @@ import 'package:foodies/models/category.dart';
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({
     super.key,
-    required this.onToogleFavorite,
     required this.availAbleMeals,
   });
-  final void Function(Meal meal) onToogleFavorite;
   final List<Meal> availAbleMeals;
 
   void _selectCategory(BuildContext context, Category category) {
@@ -24,7 +22,6 @@ class CategoriesScreen extends StatelessWidget {
           builder: (ctx) => MealsScreen(
             title: category.title,
             meals: filteredCategory,
-            onToogleFavorite: onToogleFavorite,
           ),
         ));
   }
